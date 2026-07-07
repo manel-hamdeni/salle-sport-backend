@@ -1,175 +1,156 @@
-# 🏋️ Backend - Gestion Salle de Sport (MERN)
+# 🏋️ Salle de Sport — Backend API
 
-## Installation
+> REST API for a complete gym management system, built with Node.js, Express & MongoDB.
+> 
+> 🔗 **Frontend Repository:** [sportify-front](https://github.com/manel-hamdeni/sportify-front)
+
+---
+
+## 📌 About The Project
+
+A full-featured gym management backend with role-based access control (Admin, Coach, Client, Internaute), JWT authentication, session planning, internal messaging, and notifications.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Runtime | Node.js |
+| Framework | Express.js |
+| Database | MongoDB + Mongoose |
+| Auth | JWT (JSON Web Tokens) |
+| Architecture | MVC (Model-View-Controller) |
+
+---
+
+## 👤 User Roles
+
+| Role | Access |
+|---|---|
+| `admin` | Full access — manage users, planning, gym info |
+| `coach` | View planning, client profiles |
+| `client` | Register for sessions, manage subscription |
+| `internaute` | View courses, coaches, gym info |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js v18+
+- MongoDB Atlas account
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/manel-hamdeni/salle-sport-backend.git
 cd salle-sport-backend
+
+# Install dependencies
 npm install
-npm run dev
+
+# Create .env file
+cp .env.example .env
+# Fill in your MongoDB URI and JWT secret
+
+# Start the server
+npm start
 ```
 
-Le serveur démarre sur **http://localhost:5000**
+### Environment Variables
 
----
-
-## Structure du projet
-
-```
-salle-sport-backend/
-├── config/
-│   └── db.js               # Connexion MongoDB
-├── models/
-│   ├── User.js             # Modèle de base (abstrait)
-│   ├── Admin.js            # Hérite de User
-│   ├── Coach.js            # Hérite de User
-│   ├── Client.js           # Hérite de User
-│   ├── Internaute.js       # Hérite de User
-│   ├── Planning.js
-│   ├── Message.js
-│   ├── Salle.js
-│   └── Notification.js
-├── controllers/
-│   ├── authController.js
-│   ├── userController.js
-│   ├── planningController.js
-│   ├── messageController.js
-│   ├── notificationController.js
-│   └── salleController.js
-├── routes/
-│   ├── authRoutes.js
-│   ├── userRoutes.js
-│   ├── planningRoutes.js
-│   ├── messageRoutes.js
-│   └── otherRoutes.js
-├── middlewares/
-│   └── auth.js             # JWT + vérification rôles
-├── .env
-├── .gitignore
-├── package.json
-└── server.js
-```
-
----
-
-## Variables d'environnement (.env)
-
-```
+```env
 PORT=5000
-MONGODB_URI=mongodb+srv://manel:manel1234@cluster0.l9o4cur.mongodb.net/salle_de_sport?retryWrites=true&w=majority
-JWT_SECRET=salle_sport_jwt_secret_2025_mern_project
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
 JWT_EXPIRE=7d
 ```
 
 ---
 
-## 📋 Toutes les Routes API
+## 📋 API Endpoints
 
 ### 🔐 Auth — `/api/auth`
+| Method | Route | Access | Description |
+|---|---|---|---|
+| POST | `/api/auth/inscription` | Public | Register |
+| POST | `/api/auth/connexion` | Public | Login |
+| GET | `/api/auth/moi` | Private | My profile |
+| PUT | `/api/auth/modifier-mot-de-passe` | Private | Change password |
 
-| Méthode | Route | Accès | Description |
-|---------|-------|-------|-------------|
-| POST | `/api/auth/inscription` | Public | Créer un compte |
-| POST | `/api/auth/connexion` | Public | Se connecter |
-| GET | `/api/auth/moi` | Privé | Mon profil |
-| PUT | `/api/auth/modifier-mot-de-passe` | Privé | Changer mot de passe |
-
-**Exemple inscription :**
-```json
-POST /api/auth/inscription
-{
-  "nom": "Dkhili",
-  "prenom": "Arwa",
-  "email": "arwa@gmail.com",
-  "motDePasse": "arwa1234",
-  "role": "client",
-  "abonnement": "mensuel"
-}
-```
-
-**Exemple connexion :**
-```json
-POST /api/auth/connexion
-{
-  "email": "arwa@gmail.com",
-  "motDePasse": "arwa1234"
-}
-```
-
----
-
-### 👥 Utilisateurs — `/api/users`
-
-| Méthode | Route | Accès | Description |
-|---------|-------|-------|-------------|
-| GET | `/api/users` | Admin | Tous les users |
-| GET | `/api/users/:id` | Privé | Un user |
-| PUT | `/api/users/:id` | Privé | Modifier un user |
-| DELETE | `/api/users/:id` | Admin | Supprimer |
-| GET | `/api/users/coachs/disponibles` | Public | Coachs disponibles |
-| GET | `/api/users/stats` | Admin | Statistiques |
-
----
+### 👥 Users — `/api/users`
+| Method | Route | Access | Description |
+|---|---|---|---|
+| GET | `/api/users` | Admin | All users |
+| GET | `/api/users/:id` | Private | Single user |
+| PUT | `/api/users/:id` | Private | Update user |
+| DELETE | `/api/users/:id` | Admin | Delete user |
+| GET | `/api/users/coachs/disponibles` | Public | Available coaches |
+| GET | `/api/users/stats` | Admin | Statistics |
 
 ### 📅 Planning — `/api/planning`
-
-| Méthode | Route | Accès | Description |
-|---------|-------|-------|-------------|
-| GET | `/api/planning` | Public | Tous les plannings |
-| GET | `/api/planning/:id` | Public | Un planning |
-| POST | `/api/planning` | Admin | Créer planning |
-| PUT | `/api/planning/:id` | Admin | Modifier |
-| DELETE | `/api/planning/:id` | Admin | Supprimer |
-| POST | `/api/planning/:id/inscription` | Client | S'inscrire séance |
-| DELETE | `/api/planning/:id/inscription` | Client | Se désinscrire |
-
----
+| Method | Route | Access | Description |
+|---|---|---|---|
+| GET | `/api/planning` | Public | All sessions |
+| POST | `/api/planning` | Admin | Create session |
+| PUT | `/api/planning/:id` | Admin | Update session |
+| DELETE | `/api/planning/:id` | Admin | Delete session |
+| POST | `/api/planning/:id/inscription` | Client | Join session |
+| DELETE | `/api/planning/:id/inscription` | Client | Leave session |
 
 ### 💬 Messages — `/api/messages`
-
-| Méthode | Route | Accès | Description |
-|---------|-------|-------|-------------|
-| POST | `/api/messages` | Privé | Envoyer message |
-| GET | `/api/messages/recus` | Privé | Messages reçus |
-| GET | `/api/messages/envoyes` | Privé | Messages envoyés |
-| PUT | `/api/messages/:id/lu` | Privé | Marquer lu |
-
----
+| Method | Route | Access | Description |
+|---|---|---|---|
+| POST | `/api/messages` | Private | Send message |
+| GET | `/api/messages/recus` | Private | Inbox |
+| GET | `/api/messages/envoyes` | Private | Sent messages |
+| PUT | `/api/messages/:id/lu` | Private | Mark as read |
 
 ### 🔔 Notifications — `/api/notifications`
+| Method | Route | Access | Description |
+|---|---|---|---|
+| GET | `/api/notifications` | Private | My notifications |
+| PUT | `/api/notifications/:id/lu` | Private | Mark as read |
+| DELETE | `/api/notifications/:id` | Private | Delete |
 
-| Méthode | Route | Accès | Description |
-|---------|-------|-------|-------------|
-| GET | `/api/notifications` | Privé | Mes notifications |
-| PUT | `/api/notifications/:id/lu` | Privé | Marquer lue |
-| DELETE | `/api/notifications/:id` | Privé | Supprimer |
-
----
-
-### 🏢 Salle — `/api/salle`
-
-| Méthode | Route | Accès | Description |
-|---------|-------|-------|-------------|
-| GET | `/api/salle` | Public | Infos salle |
-| POST | `/api/salle` | Admin | Créer salle |
-| PUT | `/api/salle/:id` | Admin | Modifier salle |
+### 🏢 Gym — `/api/salle`
+| Method | Route | Access | Description |
+|---|---|---|---|
+| GET | `/api/salle` | Public | Gym info |
+| POST | `/api/salle` | Admin | Create gym |
+| PUT | `/api/salle/:id` | Admin | Update gym |
 
 ---
 
-## 🔑 Utiliser le token JWT
+## 🔑 Authentication
 
-Après connexion, ajoute le token dans le header de chaque requête protégée :
+After login, include the JWT token in every protected request:
 
 ```
-Authorization: Bearer <ton_token>
+Authorization: Bearer <your_token>
 ```
 
 ---
 
-## 👤 Rôles disponibles
+## 📁 Project Structure
 
-| Rôle | Description |
-|------|-------------|
-| `admin` | Accès complet |
-| `coach` | Voir planning, profil clients |
-| `client` | Inscription séances, abonnement |
-| `internaute` | Voir cours, salle, coachs |
+```
+salle-sport-backend/
+├── config/         # MongoDB connection
+├── models/         # Mongoose schemas (User, Coach, Client, Planning...)
+├── controllers/    # Business logic
+├── routes/         # API routes
+├── middlewares/    # JWT auth + role verification
+└── server.js       # Entry point
+```
+
+---
+
+## 👩‍💻 Author
+
+**Manel Hamdeni** — 3rd Year Fullstack Developer Student @ ISET Zaghouan
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-manel--hamdeni-blue)](https://www.linkedin.com/in/manel-hamdeni-ba0281377/)
+[![GitHub](https://img.shields.io/badge/GitHub-manel--hamdeni-black)](https://github.com/manel-hamdeni)
